@@ -119,19 +119,35 @@ export class HomeComponent implements OnInit {
   }
 
   showPassword(passId: string) {
-    document.getElementById("show-hide-button").innerText = document.getElementById("show-hide-button").innerText == 'SHOW' ? 'HIDE' : 'SHOW'
-    this.authService.getPasswordDecrypted(passId).subscribe(
-      (response: any) => {
-        ACCOUNTS.forEach(account => {
-          if (account.id == passId) {
-            account.passStars = response.password;
-          }
-        });
-        this.accounts = ACCOUNTS;
-      },
-      error => {
-        console.log('error');
-      })
+    if (document.getElementById("show-hide-button").innerText == 'SHOW') {
+      debugger;
+      document.getElementById("show-hide-button").innerHTML = `<img  width="25px" height= "25px"  src="assets/svg/icon-loading.svg">`
+      this.authService.getPasswordDecrypted(passId).subscribe(
+        (response: any) => {
+          ACCOUNTS.forEach(account => {
+            if (account.id == passId) {
+              account.passStars = response.password;
+            }
+          });
+          this.accounts = ACCOUNTS;
+          document.getElementById("show-hide-button").innerText = 'HIDE';
+        },
+        error => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error..',
+            text: "Can't get the decrypted password."
+          })
+        })
+    } else if (document.getElementById("show-hide-button").innerText == 'HIDE') {
+      ACCOUNTS.forEach(account => {
+        if (account.id == passId) {
+          account.passStars = "**********";
+        }
+      });
+      this.accounts = ACCOUNTS;
+      document.getElementById("show-hide-button").innerText = 'SHOW';
+    }
   }
 
   public openModalCreateNew() {
@@ -255,10 +271,15 @@ export class HomeComponent implements OnInit {
           }
           this.authService.addAccountsWithPasswords(params).subscribe(
             (response: any) => {
-              return response.json();
+              this.getAccounts();
             },
             error => {
               console.log('error');
+              Swal.fire({
+                icon: 'error',
+                title: 'Error..',
+                text: "The account couln't be added."
+              })
             }
           )
         },
