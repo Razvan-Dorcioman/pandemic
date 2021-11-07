@@ -36,7 +36,8 @@ export class AuthenticationService {
   public generateKey(type) {
     return this.http.get(this.baseUrl + "/CryptoStorage/generateKey/" + type, {
       headers: {
-        'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
+        'Access-Control-Allow-Origin': 'http://localhost:4200'
       }
     })
   }
@@ -75,6 +76,22 @@ export class AuthenticationService {
 
   addAccountsWithKeys(params: object) {
     return this.http.post(this.baseUrl + "/CryptoStorage/AddKey", params, {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+      }
+    })
+  }
+
+  deletePassword(id: string) {
+    return this.http.delete(this.baseUrl + "/CryptoStorage/deletePassword/" + id, {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt')
+      }
+    })
+  }
+
+  deleteKey(id: string) {
+    return this.http.delete(this.baseUrl + "/CryptoStorage/deleteKey/" + id, {
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem('jwt')
       }

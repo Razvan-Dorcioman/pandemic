@@ -30,58 +30,67 @@
       </div>
 
       <select class="custom-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshAccounts()">
-        <option [ngValue]="2">2 items per page</option>
-        <option [ngValue]="6">6 items per page</option>
         <option [ngValue]="10">10 items per page</option>
+        <option [ngValue]="20">20 items per page</option>
+        <option [ngValue]="30">30 items per page</option>
       </select>
     </div>
-    <table class="table table-striped">
-      <thead>
-        <tr *ngIf="accountsType === 'passwords'">
-          <th scope="col">UserName</th>
-          <th scope="col">Password</th>
-          <th scope="col">Actions</th>
-        </tr>
-        <tr *ngIf="accountsType === 'cryptedKeys'">
-          <th scope="col">Name</th>
-          <th scope="col">Public Key</th>
-          <th scope="col">Private Key</th>
-          <th scope="col">Type</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-template ngFor let-account [ngForOf]="accounts">
-          <!-- <th *ngIf="item.key!='id'" scope="col">{{item.value.substring(0, Math.min(s.length(), 10))}}</th> -->
+    <div *ngIf="loading">
+      <div class="full-container">
+        <img width="150px" height="150px" src="assets/svg/icon-loading.svg">
+      </div>
+
+    </div>
+    <div *ngIf="!loading">
+
+      <table class="table table-striped">
+        <thead>
           <tr *ngIf="accountsType === 'passwords'">
-            <td scope="row">{{account.username}}</td>
-            <td scope="row">
-              <div>
-              {{account.passStars}}
-              <button type="button" id="show-hide-button" class="btn btn-warning" (click)="showPassword(account.id)">SHOW</button>
-            </div>
-            </td>
-            <td>
-              <div class="action-buttons-container">
-                <button type="button" class="btn btn-danger">Delete</button>
-              </div>
-            </td>
+            <th scope="col">UserName</th>
+            <th scope="col">Password</th>
+            <th scope="col">Actions</th>
           </tr>
           <tr *ngIf="accountsType === 'cryptedKeys'">
-            <td scope="row">{{account.name}}</td>
-            <td scope="row">**********</td>
-            <td scope="row">**********</td>
-            <td scope="row">{{account.type == '0'? 'aes': account.type == '1'? 'des': account.type == '2'? 'rsa': 'ec'}}</td>
-            <td>
-              <div class="action-buttons-container">
-                <button type="button" class="btn btn-danger">Delete</button>
-              </div>
-            </td>
+            <th scope="col">Name</th>
+            <th scope="col">Public Key</th>
+            <th scope="col">Private Key</th>
+            <th scope="col">Type</th>
+            <th scope="col">Actions</th>
           </tr>
-          <!-- add show and copy button -->
-
-        </ng-template>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <ng-template ngFor let-account [ngForOf]="accounts">
+            <tr *ngIf="accountsType === 'passwords'">
+              <td scope="row">{{account.username}}</td>
+              <td scope="row">
+                <div>
+                  {{account.passStars}}
+                  <button type="button" id="show-hide-button-{{account.id.substring(0,6)}}" class="btn btn-warning"
+                    (click)="showPassword(account.id)">{{account.passStars=="**********"? 'SHOW': 'HIDE'}}</button>
+                </div>
+              </td>
+              <td>
+                <div class="action-buttons-container">
+                  <button type="button" class="btn btn-danger" (click)="deleteAccount(account.id)">Delete</button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="accountsType === 'cryptedKeys'">
+              <td scope="row">{{account.name}}</td>
+              <td scope="row">**********</td>
+              <td scope="row">**********</td>
+              <td scope="row">{{account.type == '0'? 'aes': account.type == '1'? 'des': account.type == '2'? 'rsa':
+                'ec'}}
+              </td>
+              <td>
+                <div class="action-buttons-container">
+                  <button type="button" class="btn btn-danger">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

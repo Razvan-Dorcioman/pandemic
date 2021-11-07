@@ -56,9 +56,10 @@ export class HomeComponent implements OnInit {
 
   user: CurrentUser;
   baseUrl: string;
+  loading = false;
 
   page = 1;
-  pageSize = 2;
+  pageSize = 10;
   collectionSize = ACCOUNTS.length;
   accounts: any;
   accountsType = 'passwords';
@@ -85,7 +86,11 @@ export class HomeComponent implements OnInit {
           this.refreshAccounts();
         },
         error => {
-          console.log('error');
+          Swal.fire({
+            icon: 'error',
+            title: "Error...",
+            text: "Something went wrong. The Password could't be retreived"
+          })
         }
       )
     } else if (this.accountsType === 'cryptedKeys') {
@@ -97,13 +102,18 @@ export class HomeComponent implements OnInit {
           this.refreshAccounts();
         },
         error => {
-          console.log('error');
+          Swal.fire({
+            icon: 'error',
+            title: "Error...",
+            text: "Something went wrong. The Keys could't be retreived"
+          })
         }
       )
     }
   }
 
   select(accountsType: string) {
+    this.loading = true;
     this.accountsType = accountsType;
     this.getAccounts();
   }
@@ -112,6 +122,7 @@ export class HomeComponent implements OnInit {
     this.accounts = ACCOUNTS
       .map((country, i) => ({ id: i + 1, ...country }))
       .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
+    this.loading = false;
   }
 
   ngOnInit(): void {
@@ -119,18 +130,17 @@ export class HomeComponent implements OnInit {
   }
 
   showPassword(passId: string) {
-    if (document.getElementById("show-hide-button").innerText == 'SHOW') {
-      debugger;
-      document.getElementById("show-hide-button").innerHTML = `<img  width="25px" height= "25px"  src="assets/svg/icon-loading.svg">`
+    if (document.getElementById("show-hide-button-" + passId.substring(0, 6)).innerText == 'SHOW') {
+      document.getElementById("show-hide-button-" + passId.substring(0, 6)).innerHTML = `<img  width="25px" height= "25px"  src="assets/svg/icon-loading.svg">`
       this.authService.getPasswordDecrypted(passId).subscribe(
         (response: any) => {
+          document.getElementById("show-hide-button-" + passId.substring(0, 6)).innerText = 'HIDE';
           ACCOUNTS.forEach(account => {
             if (account.id == passId) {
               account.passStars = response.password;
             }
           });
           this.accounts = ACCOUNTS;
-          document.getElementById("show-hide-button").innerText = 'HIDE';
         },
         error => {
           Swal.fire({
@@ -139,14 +149,14 @@ export class HomeComponent implements OnInit {
             text: "Can't get the decrypted password."
           })
         })
-    } else if (document.getElementById("show-hide-button").innerText == 'HIDE') {
+    } else if (document.getElementById("show-hide-button-" + passId.substring(0, 6)).innerText == 'HIDE') {
       ACCOUNTS.forEach(account => {
         if (account.id == passId) {
           account.passStars = "**********";
         }
       });
       this.accounts = ACCOUNTS;
-      document.getElementById("show-hide-button").innerText = 'SHOW';
+      document.getElementById("show-hide-button-" + passId.substring(0, 6)).innerText = 'SHOW';
     }
   }
 
@@ -246,7 +256,11 @@ export class HomeComponent implements OnInit {
                 passwordInput.value = response.res.result;
               },
               error => {
-                console.log('error');
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error..',
+                  text: "Couldn't generate the password"
+                })
               }
             )
           })
@@ -274,11 +288,10 @@ export class HomeComponent implements OnInit {
               this.getAccounts();
             },
             error => {
-              console.log('error');
               Swal.fire({
                 icon: 'error',
                 title: 'Error..',
-                text: "The account couln't be added."
+                text: "The account couldn't be added."
               })
             }
           )
@@ -365,45 +378,51 @@ export class HomeComponent implements OnInit {
               case 'ec': radioCheckedValue = 3;
                 break;
             }
-
             this.authService.generateKey(radioCheckedValue).subscribe(
               (response: any) => {
+                debugger;
                 if (radioCheckedValue == 0 || radioCheckedValue == 1) {
-                  const cryptedKeyInput: any = Swal.getHtmlContainer().querySelectorAll('#key');
+                  const cryptedKeyInput: any = Swal.getHtmlContainer().querySelector('#key');
                   cryptedKeyInput.value = response.key;
                 } else if (radioCheckedValue == 2 || radioCheckedValue == 3) {
-                  const publicKeyInput: any = Swal.getHtmlContainer().querySelectorAll('#public-key');
-                  const privateKeyInput: any = Swal.getHtmlContainer().querySelectorAll('#private-key');
-                  publicKeyInput.value = response.key.public;
-                  privateKeyInput.value = response.key.private;
+                  const publicKeyInput: any = Swal.getHtmlContainer().querySelector('#public-key');
+                  const privateKeyInput: any = Swal.getHtmlContainer().querySelector('#private-key');
+                  debugger;
+                  publicKeyInput.value = response.key.publicKey;
+                  privateKeyInput.value = response.key.privateKey;
                 }
               },
               error => {
-                console.log('error');
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error...',
+                  text: "Something went wrong. The key couldn't be generated"
+                })
               }
             )
+
           })
         },
         preConfirm: () => {
           const radioChecked: any = Swal.getHtmlContainer().querySelector('input[name="keyTypeRadio"]:checked');
           const keyNameInput: any = Swal.getHtmlContainer().querySelectorAll('#keyName');
           let params = {};
-          if (radioChecked == 'aes' || radioChecked == 'des') {
+          if (radioChecked.id == 'aes' || radioChecked.id == 'des') {
             const cryptedKeyInput: any = Swal.getHtmlContainer().querySelectorAll('#key');
             params = {
               name: keyNameInput.value,
               privateKey: '',
               publicKey: cryptedKeyInput.value,
-              type: radioChecked == 'aes' ? 0 : 1
+              type: radioChecked.id == 'aes' ? 0 : 1
             }
-          } else if (radioChecked == 'rsa' || radioChecked == 'ec') {
+          } else if (radioChecked.id == 'rsa' || radioChecked.id == 'ec') {
             const publicKeyInput: any = Swal.getHtmlContainer().querySelectorAll('#public-key');
             const privateKeyInput: any = Swal.getHtmlContainer().querySelectorAll('#private-key');
             params = {
               name: keyNameInput.value,
               privateKey: privateKeyInput.value,
               publicKey: publicKeyInput.value,
-              type: radioChecked == 'rsa' ? 2 : 3
+              type: radioChecked.id == 'rsa' ? 2 : 3
             }
           }
 
@@ -412,7 +431,11 @@ export class HomeComponent implements OnInit {
               return response.json();
             },
             error => {
-              console.log('error');
+              Swal.fire({
+                icon: 'error',
+                title: 'Error..',
+                text: "Somethin went wrong. Couldn't save the key."
+              })
             }
           )
         }
@@ -421,6 +444,36 @@ export class HomeComponent implements OnInit {
       })
     }
 
+  }
+
+  deleteAccount(accountId) {
+    if (this.accountsType === 'passwords') {
+      this.authService.deletePassword(accountId).subscribe(
+        (response: any) => {
+          this.getAccounts();
+        },
+        error => {
+          Swal.fire({
+            icon: 'error',
+            title: "Error...",
+            text: "Something went wrong. The Account could't be deleted"
+          })
+        }
+      )
+    } else if (this.accountsType === 'cryptedKeys') {
+      this.authService.deleteKey(accountId).subscribe(
+        (response: any) => {
+          this.getAccounts();
+        },
+        error => {
+          Swal.fire({
+            icon: 'error',
+            title: "Error...",
+            text: "Something went wrong. The Account could't be deleted"
+          })
+        }
+      )
+    }
   }
 
 }
