@@ -17,7 +17,6 @@ import { HomeComponent } from './home/home.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 export function getToken() {
-  debugger;
   return localStorage.getItem("jwt");
 }
 

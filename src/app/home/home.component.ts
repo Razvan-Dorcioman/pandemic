@@ -76,7 +76,6 @@ export class HomeComponent implements OnInit {
     if (this.accountsType === 'passwords') {
       this.authService.getPasswords().subscribe(
         (response: any) => {
-          debugger;
           this.collectionSize = response.length;
           for (let account of response) {
             account.passStars = "**********";
@@ -87,13 +86,11 @@ export class HomeComponent implements OnInit {
         },
         error => {
           console.log('error');
-          debugger;
         }
       )
     } else if (this.accountsType === 'cryptedKeys') {
       this.authService.getCryptedKeys().subscribe(
         (response: any) => {
-          debugger;
           this.collectionSize = response.length;
           ACCOUNTS = response;
           this.accounts = response;
@@ -101,7 +98,6 @@ export class HomeComponent implements OnInit {
         },
         error => {
           console.log('error');
-          debugger;
         }
       )
     }
@@ -123,7 +119,6 @@ export class HomeComponent implements OnInit {
   }
 
   showPassword(passId: string) {
-    debugger;
     document.getElementById("show-hide-button").innerText = document.getElementById("show-hide-button").innerText == 'SHOW' ? 'HIDE' : 'SHOW'
     this.authService.getPasswordDecrypted(passId).subscribe(
       (response: any) => {
@@ -136,7 +131,6 @@ export class HomeComponent implements OnInit {
       },
       error => {
         console.log('error');
-        debugger;
       })
   }
 
@@ -261,17 +255,14 @@ export class HomeComponent implements OnInit {
           }
           this.authService.addAccountsWithPasswords(params).subscribe(
             (response: any) => {
-              debugger;
               return response.json();
             },
             error => {
               console.log('error');
-              debugger;
             }
           )
         },
       }).then((result: any) => {
-        debugger;
 
       })
 
@@ -353,7 +344,6 @@ export class HomeComponent implements OnInit {
               case 'ec': radioCheckedValue = 3;
                 break;
             }
-            debugger;
 
             this.authService.generateKey(radioCheckedValue).subscribe(
               (response: any) => {
@@ -366,10 +356,8 @@ export class HomeComponent implements OnInit {
                   publicKeyInput.value = response.key.public;
                   privateKeyInput.value = response.key.private;
                 }
-                debugger;
               },
               error => {
-                debugger;
                 console.log('error');
               }
             )
@@ -400,17 +388,14 @@ export class HomeComponent implements OnInit {
 
           this.authService.addAccountsWithKeys(params).subscribe(
             (response: any) => {
-              debugger;
               return response.json();
             },
             error => {
               console.log('error');
-              debugger;
             }
           )
         }
       }).then((result: any) => {
-        debugger;
 
       })
     }
