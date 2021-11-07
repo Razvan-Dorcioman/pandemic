@@ -380,14 +380,12 @@ export class HomeComponent implements OnInit {
             }
             this.authService.generateKey(radioCheckedValue).subscribe(
               (response: any) => {
-                debugger;
                 if (radioCheckedValue == 0 || radioCheckedValue == 1) {
                   const cryptedKeyInput: any = Swal.getHtmlContainer().querySelector('#key');
                   cryptedKeyInput.value = response.key;
                 } else if (radioCheckedValue == 2 || radioCheckedValue == 3) {
                   const publicKeyInput: any = Swal.getHtmlContainer().querySelector('#public-key');
                   const privateKeyInput: any = Swal.getHtmlContainer().querySelector('#private-key');
-                  debugger;
                   publicKeyInput.value = response.key.publicKey;
                   privateKeyInput.value = response.key.privateKey;
                 }
@@ -429,6 +427,7 @@ export class HomeComponent implements OnInit {
           this.authService.addAccountsWithKeys(params).subscribe(
             (response: any) => {
               return response.json();
+              this.getAccounts();
             },
             error => {
               Swal.fire({
