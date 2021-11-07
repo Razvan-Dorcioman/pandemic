@@ -1,0 +1,66 @@
+<div class="card">
+	<div class="card-body">
+		<div class="card-title">Register</div>
+		<form [formGroup]="registerForm" autocomplete="off" novalidate (ngSubmit)="registerUser(registerForm.value)">
+			<div class="form-group row">
+				<div class="col-md-2">
+				</div>
+				<div class="ccol-form-label col-sm-8">
+					<label for="email">Email:</label>
+					<input type="email" id="email" formControlName="email" class="form-control" />
+					<em *ngIf="validateControl('email') && hasError('email', 'email')">Please provide a valid email</em>
+					<em *ngIf="validateControl('email') && hasError('email', 'required')">Email is required</em>
+				</div>
+				<div class="col-md-2">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-md-2">
+				</div>
+				<div class="ccol-form-label col-sm-8">
+					<label for="userName">User name:</label>
+					<input type="text" id="userName" formControlName="userName" class="form-control" />
+					<em *ngIf="validateControl('userName') && hasError('userName', 'required')">User name is required</em>
+				</div>
+				<div class="col-md-2">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-md-2">
+				</div>
+				<div class="ccol-form-label col-sm-8">
+					<label for="password">Password:</label>
+					<input type="password" id="password" formControlName="password" class="form-control" />
+					<em *ngIf="validateControl('password') && hasError('password', 'required')">Password is required</em>
+				</div>
+				<div class="col-md-2">
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-md-2">
+				</div>
+				<div class="ccol-form-label col-sm-8">
+					<label for="confirmPassword">Confirmation Password:</label>
+					<input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control" />
+					<em *ngIf="validateControl('confirmPassword') && hasError('confirmPassword', 'required')">Confirm Password is
+						required</em>
+					<em *ngIf="!passwordMatchValidator(registerForm.value)">Confirm Password does not match</em>
+				</div>
+				<div class="col-md-2">
+				</div>
+			</div>
+			<div *ngIf="this.areErrors" class="alert alert-danger row">
+				<em *ngFor="let error of this.errorList">
+					{{error}}
+					<br>
+				</em>
+			</div>
+			<br>
+			<div class="form-group row">
+				<div class="col-md-12 text-center">
+					<button type="submit" class="btn btn-success" [disabled]="!registerForm.valid">Register</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

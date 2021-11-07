@@ -1,0 +1,97 @@
+.container {
+  height: 100%;
+  width: 100%;
+  vertical-align: middle;
+}
+
+.big-title {
+  font-size: 10vh;
+  margin: 10% auto 0;
+  text-align: center;
+}
+
+.little-title {
+  font-size: 4vh;
+  margin: auto;
+  text-align: center;
+}
+
+.color-green {
+  color: #198754;
+}
+
+.buttons-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.buttons-container>* {
+  margin: 0 10px;
+}
+
+.action-buttons-container>* {
+  margin: 0 5px;
+}
+
+td, th {
+  text-align: center;
+}
+
+ngb-pagination ::ng-deep ul > li:not(.active) > a {
+  color: #198754 !important;
+}
+
+ngb-pagination ::ng-deep ul > li.active > a {
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+}
+
+ngb-pagination {
+  position: relative;
+}
+
+select {
+  height: 38px;
+  color: #198754;
+  border-radius: 4px;
+  border-width: 0.5px;
+  border-color: #dddddd;
+}
+
+#accountsType {
+  position: absolute;
+  right: 780px;
+  text-transform: uppercase;
+}
+
+#passwords-button {
+  position: absolute;
+  right: 580px;
+}
+
+#crypted-keys-button {
+  position: absolute;
+  right: 430px;
+}
+
+#add-new-account {
+  position: absolute;
+  right: 280px;
+}
+
+.swal2-buttons-container>* {
+  margin-top: 10px;
+}
+
+input[type=number] {
+  -webkit-appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  width: 20px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

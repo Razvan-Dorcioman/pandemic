@@ -1,0 +1,87 @@
+<div>
+  <div *ngIf="!this.user">
+    <div class="container">
+      <div class="big-title">Welcome to Pandemic.</div>
+      <div class="little-title">A passwords manager for you.</div>
+      <div class="little-title color-green">Please log in or sign up to save your accounts</div>
+      <div class="buttons-container">
+        <button type="button" class="btn btn-outline-success" [routerLink]="['/login']">Sign in</button>
+        <button type="button" class="btn btn-outline-success" [routerLink]="['/register']">Sign up</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="this.user">
+
+
+
+    <div class="d-flex justify-content-between p-2">
+      <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize"
+        (pageChange)="refreshAccounts()">
+      </ngb-pagination>
+
+      <div>
+        <h3 id="accountsType">{{this.accountsType}}</h3>
+        <button type="button" id="passwords-button" class="btn btn-outline-success"
+          (click)="select('passwords')">Passwords</button>
+        <button type="button" id="crypted-keys-button" class="btn btn-outline-success"
+          (click)="select('cryptedKeys')">Crypted keys</button>
+        <button type="button" id="add-new-account" class="btn btn-success" (click)="openModalCreateNew()">Add
+          account</button>
+      </div>
+
+      <select class="custom-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshAccounts()">
+        <option [ngValue]="2">2 items per page</option>
+        <option [ngValue]="6">6 items per page</option>
+        <option [ngValue]="10">10 items per page</option>
+      </select>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr *ngIf="accountsType === 'passwords'">
+          <th scope="col">UserName</th>
+          <th scope="col">Password</th>
+          <th scope="col">Actions</th>
+        </tr>
+        <tr *ngIf="accountsType === 'cryptedKeys'">
+          <th scope="col">Name</th>
+          <th scope="col">Public Key</th>
+          <th scope="col">Private Key</th>
+          <th scope="col">Type</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-account [ngForOf]="accounts">
+          <!-- <th *ngIf="item.key!='id'" scope="col">{{item.value.substring(0, Math.min(s.length(), 10))}}</th> -->
+          <tr *ngIf="accountsType === 'passwords'">
+            <td scope="row">{{account.username}}</td>
+            <td scope="row">
+              <div>
+              {{account.passStars}}
+              <button type="button" id="show-hide-button" class="btn btn-warning" (click)="showPassword(account.id)">SHOW</button>
+            </div>
+            </td>
+            <td>
+              <div class="action-buttons-container">
+                <button type="button" class="btn btn-danger">Delete</button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="accountsType === 'cryptedKeys'">
+            <td scope="row">{{account.name}}</td>
+            <td scope="row">**********</td>
+            <td scope="row">**********</td>
+            <td scope="row">{{account.type == '0'? 'aes': account.type == '1'? 'des': account.type == '2'? 'rsa': 'ec'}}</td>
+            <td>
+              <div class="action-buttons-container">
+                <button type="button" class="btn btn-danger">Delete</button>
+              </div>
+            </td>
+          </tr>
+          <!-- add show and copy button -->
+
+        </ng-template>
+      </tbody>
+    </table>
+  </div>
+</div>
